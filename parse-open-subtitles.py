@@ -18,7 +18,7 @@ def main():
     parser = argparse.ArgumentParser(description='Set parameters for xml parser.')
     parser.add_argument('--rootXmlDir', default="../../data/OpenSubtitles/en/",
                         help='Path to root directory of xml files')
-    parser.add_argument('--dataDir', default="../../data/OpenSubtitles/raw/",
+    parser.add_argument('--dataDir', default="../../data/OpenSubtitles/raw_capitalized/",
                         help='Path to directory process data will be saved.')
     args = parser.parse_args()
     processed_data_dir = args.dataDir
@@ -106,12 +106,13 @@ def extractTokenizedPhrases(xmlFilePath, dataDirFilePath):
 This function removes funky things in text
 There is probably a much better way to do it, but unless the token list is
 much bigger this shouldn't really matter how inefficient it is
+
+Note (Joy, 10/18/2017):
+Need modification for better entity extraction!
 '''
-
-
 def cleanText(text):
     t = text.strip('-')
-    t = t.lower()
+    #t = t.lower() commented out for entity extraction
     t = t.strip('\"')
     regex = re.compile('\(.+?\)')
     t = regex.sub('', t)
