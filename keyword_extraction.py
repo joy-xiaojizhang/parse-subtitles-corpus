@@ -1,7 +1,7 @@
 #resource: https://github.com/csurfer/rake-nltk
 
 from rake_nltk import Rake
-text = open('./data/OpenSubtitles/raw/1901_cornell-columbia-university-of-pennsylvania-boat-race-at-ithaca-ny-showing-lehigh-valley-observation-train_raw.txt', 'r').read()
+text = open('../../data/OpenSubtitles/raw/Action_2-fast-2-furious_raw.txt', 'r').read()
 
 r = Rake() # Uses stopwords for english from NLTK, and all puntuation characters.
 
@@ -11,6 +11,4 @@ r = Rake() # Uses stopwords for english from NLTK, and all puntuation characters
 r.extract_keywords_from_text(text)
 
 # print r.get_ranked_pharases
-print r.get_ranked_phrases_with_scores() # To get keyword phrases ranked highest to lowest.
-
-
+print(r.get_ranked_phrases_with_scores()) # To get keyword phrases ranked highest to lowest.

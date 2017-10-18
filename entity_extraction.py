@@ -1,24 +1,33 @@
-import glob, os
-from nltk import sent_tokenize, word_tokenize, pos_tag, ne_chunk
+import nltk, glob, os
 
-def extract_entities(text):
-    entities = []
-    for sentence in sent_tokenize(text):
-        chunks = ne_chunk(pos_tag(word_tokenize(sentence)))
-        entities.extend([chunk for chunk in chunks if hasattr(chunk, 'node')])
-    return entities
+def extract_entity_names(t):
+    entity_names = []
 
-def main():
-    source_genre = 'Action'
-    target_genre = ''
-    '''
-    raw_data_dir = '../../data/OpenSubtitles/raw/'
-    for raw_file in os.listdir(raw_data_dir):
-        if raw_file.startswith(source_genre):
-    '''
-    f = open('../../data/OpenSubtitles/raw/Action_2-fast-2-furious_raw.txt', 'r+')
-    text = f.readlines()
-    print(extract_entities(text))
+    if hasattr(t, 'label') and t.label:
+        if t.label() == 'NE':
+            entity_names.append(' '.join([child[0] for child in t]))
+        else:
+            for child in t:
+                entity_names.extend(extract_entity_names(child))
 
-if __name__ == "__main__":
-    main()
+    return entity_names
+
+#source_genre = 'Action'
+raw_data_dir = '../../data/OpenSubtitles/raw/'
+
+for raw_file in os.listdir(raw_data_dir):
+    #if raw_file.startswith(source_genre):
+    with open(raw_data_dir + raw_file, 'r') as f:
+        for line in f:
+            sentences = nltk.sent_tokenize(line)
+            tokenized_sentences = [nltk.word_tokenize(sentence) for sentence in sentences]
+            tagged_sentences = [nltk.pos_tag(sentence) for sentence in tokenized_sentences]
+            chunked_sentences = nltk.ne_chunk_sents(tagged_sentences, binary=True)
+            #print(sentences)
+
+            entities = []
+            for tree in chunked_sentences:
+                entities.extend(extract_entity_names(tree))
+
+            if len(entities):
+                print(entities)
